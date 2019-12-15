@@ -8,7 +8,7 @@ import (
 type Repository interface {
 	Close()
 	SaveEntity(*model.QueryResult) error
-	GetQueryTextForDeleteData(*model.QueryResult) string
+	SetQueryTextForDeleteData(*model.QueryResult)
 }
 
 var impl Repository
@@ -28,8 +28,8 @@ func SaveEntity(q *model.QueryResult) error {
 	return impl.SaveEntity(q)
 }
 
-// GetQueryTextForDeleteData возвращает текст запроса
+// SetQueryTextForDeleteData возвращает текст запроса
 // для удаления данных
-func GetQueryTextForDeleteData(q *model.QueryResult) string {
-	return impl.GetQueryTextForDeleteData(q)
+func SetQueryTextForDeleteData(q *model.QueryResult) {
+	impl.SetQueryTextForDeleteData(q)
 }

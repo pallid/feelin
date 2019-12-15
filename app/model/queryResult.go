@@ -8,6 +8,7 @@ type QueryResult struct {
 	EmptyRequest   bool                     `json:"ПустойЗапрос"`
 	ExchangeJobID  string                   `json:"УИД"`
 	JobID          string                   `json:"УИД_Пакета"`
+	TextDeleteData string
 	Options
 }
 

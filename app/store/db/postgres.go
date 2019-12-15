@@ -34,9 +34,9 @@ func (r *PostgresRepository) SaveEntity(q *model.QueryResult) error {
 	return nil
 }
 
-// GetQueryTextForDeleteData возвращает текст запроса
+// SetQueryTextForDeleteData возвращает текст запроса
 // для удаления данных
-func (r *PostgresRepository) GetQueryTextForDeleteData(q *model.QueryResult) string {
+func (r *PostgresRepository) SetQueryTextForDeleteData(q *model.QueryResult) {
 	var t string
 	switch {
 	case q.HardRemoval:
@@ -44,5 +44,5 @@ func (r *PostgresRepository) GetQueryTextForDeleteData(q *model.QueryResult) str
 	default:
 		t = `UPDATE %s SET deleted_at = NULL area = %d`
 	}
-	return fmt.Sprintf(t, q.TableName, q.Area)
+	q.TextDeleteData = fmt.Sprintf(t, q.TableName, q.Area)
 }
