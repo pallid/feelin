@@ -42,7 +42,7 @@ func (r *PostgresRepository) GetQueryTextForDeleteData(q *model.QueryResult) str
 	case q.HardRemoval:
 		t = `DELETE from %s WHERE area = %d`
 	default:
-		t = `UPDATE %s SET deleted_at = ? area = %d`
+		t = `UPDATE %s SET deleted_at = NULL area = %d`
 	}
 	return fmt.Sprintf(t, q.TableName, q.Area)
 }
