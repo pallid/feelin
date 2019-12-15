@@ -44,5 +44,5 @@ func (r *PostgresRepository) SetQueryTextForDeleteData(q *model.QueryResult) {
 	default:
 		t = `UPDATE %s SET deleted_at = NULL area = %d`
 	}
-	q.TextDeleteData = fmt.Sprintf(t, q.TableName, q.Area)
+	q.DeleteData = fmt.Sprintf(t, q.TableName, q.Area)
 }

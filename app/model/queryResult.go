@@ -8,8 +8,8 @@ type QueryResult struct {
 	EmptyRequest   bool                     `json:"ПустойЗапрос"`
 	ExchangeJobID  string                   `json:"УИД"`
 	JobID          string                   `json:"УИД_Пакета"`
-	TextDeleteData string
 	Options
+	RequestTexts
 }
 
 // Options описание настроек
@@ -21,6 +21,12 @@ type Options struct {
 	SelectionFields  []string `json:"ПоляОтбора"`
 	ComparionFields  []string `json:"ПоляСравнения"`
 	CompareAllFields bool     `json:"СравниватьПоВсемПолям"`
+}
+
+// RequestTexts тексты запросов
+type RequestTexts struct {
+	DeleteData string
+	SelectData string
 }
 
 // UseHardDelete возвращает признак полного удаления
