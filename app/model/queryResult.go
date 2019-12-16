@@ -62,17 +62,20 @@ func (q *QueryResult) GetComparisonFields() []string {
 
 // CompareFields метод сравнения структур
 // возвращает признак равенства структур
-func (q *QueryResult) CompareFields(struct1, struct2 map[string]interface{}) (areEqual bool) {
+func (q *QueryResult) CompareFields(struct1, struct2 map[string]interface{}) bool {
 	if q.HardRemoval {
 		return true
 	}
+	var keys []string
 	// Сравниваем по всем полям первой структуры
 	switch {
 	case q.CompareAllFields:
-
+		keys = make([]string, 0, len(struct1))
+		for k := range struct1 {
+			keys = append(keys, k)
+		}
 	default:
-		astr := q.GetComparisonFields()
-		areEqual = comparekv.CompareFields(struct1, struct2, astr...)
+		keys = q.GetComparisonFields()
 	}
-	return areEqual
+	return comparekv.CompareFields(struct1, struct2, keys...)
 }
