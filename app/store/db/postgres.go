@@ -52,7 +52,7 @@ func (r *PostgresRepository) SetQueryTextForDeleteData(q *model.QueryResult) {
 func (r *PostgresRepository) SetQueryTextForSelectData(q *model.QueryResult) {
 
 	t := fmt.Sprintf(`SELECT * from %s WHERE area = %d`, q.TableName, q.Area)
-	for _, field := range q.SelectionFields {
+	for _, field := range q.GetSelectionFields() {
 		t += fmt.Sprintf(` AND %s = ?`, field)
 	}
 	q.SelectData = t

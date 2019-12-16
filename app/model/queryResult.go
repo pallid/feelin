@@ -1,5 +1,7 @@
 package model
 
+import "github.com/pallid/feelin/pkg/comparekv"
+
 // QueryResult основная модель приложения
 type QueryResult struct {
 	Area           int                      `json:"НомерОбласти"`
@@ -56,4 +58,21 @@ func (q *QueryResult) GetSelectionFields() []string {
 // по которым необходимо выполнять сравнение
 func (q *QueryResult) GetComparisonFields() []string {
 	return q.ComparionFields
+}
+
+// CompareFields метод сравнения структур
+// возвращает признак равенства структур
+func (q *QueryResult) CompareFields(struct1, struct2 map[string]interface{}) (areEqual bool) {
+	if q.HardRemoval {
+		return true
+	}
+	// Сравниваем по всем полям первой структуры
+	switch {
+	case q.CompareAllFields:
+
+	default:
+		astr := q.GetComparisonFields()
+		areEqual = comparekv.CompareFields(struct1, struct2, astr...)
+	}
+	return areEqual
 }
