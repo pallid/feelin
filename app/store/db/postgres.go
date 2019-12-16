@@ -46,3 +46,14 @@ func (r *PostgresRepository) SetQueryTextForDeleteData(q *model.QueryResult) {
 	}
 	q.DeleteData = fmt.Sprintf(t, q.TableName, q.Area)
 }
+
+// SetQueryTextForSelectData возвращает текст запроса для получения данных.
+// Текст формируется из полей для выбора, указанных в задании
+func (r *PostgresRepository) SetQueryTextForSelectData(q *model.QueryResult) {
+
+	t := fmt.Sprintf(`SELECT * from %s WHERE area = %d`, q.TableName, q.Area)
+	for _, field := range q.SelectionFields {
+		t += fmt.Sprintf(` AND %s = ?`, field)
+	}
+	q.SelectData = t
+}
