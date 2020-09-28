@@ -3,8 +3,9 @@ package metrics
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 const (
@@ -94,31 +95,39 @@ Loop:
 	}
 }
 
-func (ms *MetricsService) insertMetrics(arrayMetrics []*QuantityMetric) (err error) {
-	valueStrings := []string{}
-	valueArgs := []interface{}{}
-	for _, m := range arrayMetrics {
-		valueStrings = append(valueStrings, "(?, ?, ?, ?, ?)")
-		valueArgs = append(valueArgs, m.DateMetric)
-		valueArgs = append(valueArgs, m.Area)
-		valueArgs = append(valueArgs, m.TableName)
-		valueArgs = append(valueArgs, m.Value)
-		valueArgs = append(valueArgs, m.Hash)
-	}
-	smt := `INSERT INTO quantity_metrics (date_metric, area, table_name, value, hash) VALUES %s`
-	smt = fmt.Sprintf(smt, strings.Join(valueStrings, ","))
+func (ms *MetricsService) insertMetrics(arrayMetrics []*QuantityMetric) error {
 	tx, err := ms.db.Begin()
 	if err != nil {
-		return
+		return err
 	}
-	defer func() {
-		switch err {
-		case nil:
-			err = tx.Commit()
-		default:
-			tx.Rollback()
+	fNames := []string{"date_metric", "area", "table_name", "value", "hash"}
+	stmt, err := tx.Prepare(pq.CopyIn("quantity_metrics", fNames...))
+	if err != nil {
+		return err
+	}
+	for _, m := range arrayMetrics {
+		values := make([]interface{}, 0, len(fNames))
+		values = append(values, m.DateMetric)
+		values = append(values, m.Area)
+		values = append(values, m.TableName)
+		values = append(values, m.Value)
+		values = append(values, m.Hash)
+		_, err = stmt.Exec(values...)
+		if err != nil {
+			return err
 		}
-	}()
-	_, err = tx.Exec(smt, valueArgs...)
-	return
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+	err = stmt.Close()
+	if err != nil {
+		return err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+	return nil
 }
