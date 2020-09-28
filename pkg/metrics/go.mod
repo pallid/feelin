@@ -1,4 +1,4 @@
-module metrics
+module github.com/pallid/feelin/pkg/metrics
 
 go 1.14
 
